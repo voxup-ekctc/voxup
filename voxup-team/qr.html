@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VoxUp QR Generator</title>
+<style>
+body{font-family:system-ui,sans-serif;background:#f4f6fb;color:#0b1f44;padding:20px;text-align:center}
+.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin-top:20px}
+.q{background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.08);border-radius:16px;padding:16px}
+.q div{background:#fff;border:1px solid #e3e8f3;padding:10px;display:inline-block;border-radius:10px}
+button{margin-top:10px;padding:10px 18px;border:0;border-radius:30px;background:#ff6a1f;color:#fff;font-weight:600;cursor:pointer}
+small{display:block;color:#5d6a85;word-break:break-all;margin-top:6px}
+</style></head><body>
+<h1>VoxUp QR Codes</h1>
+<p>Open this page on your computer, after setting BASE_URL in members.js.</p>
+<button onclick="all()">Download all</button>
+<div class="g" id="g"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="members.js"></script>
+<script>
+const g = document.getElementById("g");
+MEMBERS.forEach(m => {
+  const url = BASE_URL + "/card.html?id=" + m.id;
+  const d = document.createElement("div"); d.className = "q";
+  d.innerHTML = `<b>${m.name}</b><br><div></div><small>${url}</small><br><button>Download PNG</button>`;
+  g.appendChild(d);
+  new QRCode(d.querySelector("div"), {text: url, width: 400, height: 400, correctLevel: QRCode.CorrectLevel.H});
+  d.querySelector("button").onclick = () => dl(d, m);
+});
+function dl(d, m){
+  const c = d.querySelector("canvas");
+  const a = document.createElement("a"); a.href = c.toDataURL("image/png"); a.download = "qr-" + m.id + ".png"; a.click();
+}
+async function all(){
+  const cards = [...g.children];
+  for (let i = 0; i < cards.length; i++){ dl(cards[i], MEMBERS[i]); await new Promise(r => setTimeout(r, 400)); }
+}
+</script></body></html>

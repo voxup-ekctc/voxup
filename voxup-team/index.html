@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VoxUp EKC · Team</title><link rel="icon" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head><body>
+<div id="progress"></div><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+<section>
+  <img class="logo-hero reveal" src="logo.png" alt="VoxUp EKC">
+  <p class="sub reveal">Meet the voices, creators and minds behind VoxUp.</p>
+  <div class="scroll">Scroll ↓</div>
+</section>
+<section class="team-sec">
+  <h2 class="reveal">Our <span class="grad">Crew</span></h2>
+  <input id="search" class="reveal" placeholder="Search name or position...">
+  <div class="grid" id="grid"></div>
+</section>
+<footer>© VoxUp EKC</footer>
+<script src="members.js"></script><script src="app.js"></script>
+<script>
+const grid = $("#grid");
+function draw(list){
+  grid.innerHTML = list.map(m => `<a class="tm reveal" href="card.html?id=${m.id}">
+    <div class="photo">${photoHTML(m)}</div><h3>${m.name}</h3><small>${m.position}</small>
+    <p style="color:var(--mute);font-size:.8rem;margin-top:4px">${m.department}</p></a>`).join("");
+  startEffects();
+}
+draw(MEMBERS);
+$("#search").addEventListener("input", e => {
+  const q = e.target.value.toLowerCase();
+  draw(MEMBERS.filter(m => (m.name + m.position + m.department).toLowerCase().includes(q)));
+});
+</script></body></html>

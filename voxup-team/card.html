@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VoxUp ID</title><link rel="icon" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head><body>
+<div id="progress"></div><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+<div id="app"></div>
+<footer>VoxUp EKC · Digital ID</footer>
+<script src="members.js"></script><script src="app.js"></script>
+<script>
+const id = new URLSearchParams(location.search).get("id");
+const m = MEMBERS.find(x => x.id === id);
+const app = $("#app");
+if (!m) {
+  app.innerHTML = `<section><h1>ID not found</h1><p class="sub">Check the QR code or <a href="index.html" style="color:var(--o2)">see the team</a>.</p></section>`;
+} else {
+  document.title = m.name + " · VoxUp";
+  const row = (ic, label, val) => `<div class="row reveal"><div class="ic">${ic}</div><div><small>${label}</small><span>${val}</span></div></div>`;
+  app.innerHTML = `
+  <section>
+    <div class="idcard reveal" id="card">
+      <div class="hole"></div>
+      <img class="lg" src="logo.png" alt="VoxUp EKC">
+      <div class="photo">${photoHTML(m)}</div>
+      <h3>${m.name}</h3>
+      <span class="pill">${m.position}</span>
+      <div class="mini">${m.department} · ${m.batch}</div>
+    </div>
+    <div class="scroll">Scroll for details ↓</div>
+  </section>
+  <section>
+    <h2 class="reveal">Member <span class="grad">Details</span></h2>
+    <div class="list">
+      ${row("👤","Name",m.name)}${row("🎙️","Position",m.position)}
+      ${row("🏫","Department",m.department)}${row("🎓","Batch",m.batch)}
+      ${row("✉️","Email",m.email)}
+    </div>
+  </section>
+  <section>
+    <h2 class="reveal">Let's <span class="grad">Connect</span></h2>
+    <div class="btns">
+      <a class="btn in reveal" href="${m.linkedin}" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="btn ig reveal" href="${m.instagram}" target="_blank" rel="noopener">Instagram</a>
+      <a class="btn reveal" href="mailto:${m.email}">Email</a>
+      <button class="btn reveal" onclick="saveContact()">Save Contact</button>
+      <a class="btn ghost reveal" href="index.html" style="flex-basis:100%;text-align:center">Meet the whole team</a>
+    </div>
+  </section>`;
+  tilt($("#card"));
+  startEffects();
+}
+function saveContact(){
+  const v = `BEGIN:VCARD\nVERSION:3.0\nFN:${m.name}\nORG:VoxUp EKC\nTITLE:${m.position}\nEMAIL:${m.email}\nURL:${m.linkedin}\nEND:VCARD`;
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([v], {type: "text/vcard"}));
+  a.download = m.id + ".vcf"; a.click();
+}
+</script></body></html>
